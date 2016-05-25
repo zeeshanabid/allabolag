@@ -1,0 +1,19 @@
+<!doctype html>
+
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>Organization number finder!</title>
+  <meta name="description" content="A small service to find organization numbers">
+  <meta name="author" content="Zeeshan">
+</head>
+
+<body>
+  <form action="/search" method="post">
+    <label for="name">Organization name: </label><input type="text" name="name" id="name" value="<%= org.name if org %>">
+    <input type="submit">
+  </form>
+  <span><%= err if err %></span>
+  <h3><%= org.orgnum ? "Organization number: " + org.orgnum : "Organization number not found" if org %></h3>
+</body>
+</html>
