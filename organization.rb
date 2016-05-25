@@ -21,6 +21,22 @@ class Organization
     Organization.new(:name => name, :orgnum => orgnum)
   end
 
+  def self.search_in_cache(name)
+    Organization.first(:name => name)
+  end
+
+  def self.search(name)
+    name = normalize(name)
+    org = search_in_cache(name) || search_on_web(name) unless name.nil?
+    org.save if org && org.new?
+    org
+  end
+
+  private
+  def self.normalize(name)
+    name.downcase.strip unless name.nil?
+  end
+
 end
 
 DataMapper.finalize
