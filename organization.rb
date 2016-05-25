@@ -14,7 +14,7 @@ class Organization
   validates_uniqueness_of :name
 
   def self.search_on_web(name)
-    url      = "http://www.allabolag.se/?what=#{URI.escape(name)}"
+    url      = "http://www.allabolag.se/?what=#{CGI.escape(name)}"
     doc      = Nokogiri::HTML(open(url))
     org_elem = doc.css("td.text11grey6").first
     orgnum   = org_elem && org_elem.text =~ /Org\.nummer: (\d+-\d+)/ && $1 || nil
@@ -27,6 +27,7 @@ class Organization
 
   def self.search(name)
     name = normalize(name)
+    raise "Enter a valid organizaion name." if name.nil? || name.length == 0
     org = search_in_cache(name) || search_on_web(name) unless name.nil?
     org.save if org && org.new?
     org
