@@ -32,10 +32,28 @@ class AllabolagAPITest < Test::Unit::TestCase
     DataMapper.finalize
   end
 
+  def teardown
+    Organization.destroy
+  end
+
   def test_app
     get "/"
     assert last_response.ok?
-    assert_equal "Allabolag API", last_response.body
+    assert_match "Organization number finder!", last_response.body
+  end
+
+  def test_formats
+    post "/search", :name => "max", :format => :html
+    assert last_response.ok?
+    assert_match "Organization number: 556485-6226", last_response.body
+
+    post "/search", :name => "apoex ab", :format => :json
+    assert last_response.ok?
+    assert_match '"orgnum":"556773-4743"', last_response.body
+
+    post "/search", :name => "sl", :format => :xml
+    assert last_response.ok?
+    assert_match "<orgnum>556402-7166</orgnum>", last_response.body
   end
 
   def test_search_on_web
